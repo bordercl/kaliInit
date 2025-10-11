@@ -1,1 +1,1 @@
-# kaliInit.sh
+# kaliInit
