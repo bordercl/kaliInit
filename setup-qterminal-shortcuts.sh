@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 INI="$HOME/.config/qterminal.org/qterminal.ini"
 
