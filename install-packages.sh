@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # GitHub上のpackages.txtのURL（あなたのリポジトリのraw URLに書き換えてください）
 URL="https://raw.githubusercontent.com/bordercl/kaliInit/main//packages.txt"
