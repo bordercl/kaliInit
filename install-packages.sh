@@ -13,7 +13,7 @@ echo "Updating package list..."
 sudo apt update
 
 echo "Installing packages..."
-grep -vE '^\s*#|^\s*$' "$TMPFILE" | sed 's/\s*#.*//' | xargs sudo apt install -y
+grep -vE '^\s*#|^\s*$' "$TMPFILE" | sed 's/\s*#.*//' | tee /dev/tty | xargs sudo apt install -y
 
 rm "$TMPFILE"
 
