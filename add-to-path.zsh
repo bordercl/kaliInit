@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # ~/.zshrcに/opt/tools/binがPATHに含まれているか確認し、なければ追加するスクリプト
 
