@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 URL="https://raw.githubusercontent.com/bordercl/kaliInit/main/packages.txt"
 TMPFILE=$(mktemp)
