@@ -15,6 +15,14 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
+# パッケージリスト表示（任意）
+echo "Package list:"
+cat "$TMPFILE"
+
+# パッケージリストのアップデート
+echo "Updating package lists..."
+sudo apt update
+
 # インストール
 echo "Installing packages..."
 xargs -a "$TMPFILE" sudo apt install -y
