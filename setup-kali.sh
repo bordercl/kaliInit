@@ -1,5 +1,5 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env zsh
+set -e  # エラー時に即終了
 
 echo "=== [1/4] タイムゾーンを日本（Asia/Tokyo）に設定 ==="
 sudo timedatectl set-timezone Asia/Tokyo
