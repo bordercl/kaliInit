@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # GitHub上のpackages.txtのURL（あなたのリポジトリのraw URLに書き換えてください）
-URL="https://raw.githubusercontent.com/ユーザー名/リポジトリ名/ブランチ名/packages.txt"
+URL="https://raw.githubusercontent.com/bordercl/kaliInit/main//packages.txt"
 
 # 一時ファイル
 TMPFILE=$(mktemp)
