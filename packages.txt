@@ -1,19 +1,23 @@
-curl        # test
-wget        # test
-git        # test
-vim        # test
-nano        # test
-htop        # test
-tree        # test
-tmux        # test
-screen        # test
-net-tools        # test
-dnsutils            # test
-iputils-ping        # test
-traceroute        # test
-tcpdump		# test
-sudo	# test
-python3  # test
-python3-pip # test
-build-essential#test
-zip
+#curl        # test
+#wget        # test
+#git        # test
+#vim        # test
+#nano        # test
+#htop        # test
+#tree        # test
+#tmux        # test
+#screen        # test
+#net-tools        # test
+#dnsutils            # test
+#iputils-ping        # test
+#traceroute        # test
+#tcpdump		# test
+#sudo	# test
+#python3  # test
+#python3-pip # test
+#build-essential#test
+#zip
+ghidra
+tilix
+terminator
+
