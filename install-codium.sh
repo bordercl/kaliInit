@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 # VSCodium GPGキーを取得して配置
 echo "[*] Adding GPG key..."
@@ -18,10 +18,11 @@ sudo apt install -y codium
 
 # デスクトップにショートカット作成
 echo "[*] Creating desktop shortcut..."
-cp /usr/share/applications/codium.desktop ~/Desktop/
-chmod +x ~/Desktop/codium.desktop
+cp /usr/share/applications/codium.desktop "$HOME/Desktop/"
+chmod +x "$HOME/Desktop/codium.desktop"
 
 # 完了メッセージ
 echo "[✔] VSCodium installation complete."
 echo "    - Launch via: codium"
 echo "    - Or click the desktop icon: ~/Desktop/codium.desktop"
+
