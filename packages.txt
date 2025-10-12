@@ -8,7 +8,6 @@ tree        # test
 tmux        # test
 screen        # test
 net-tools        # test
-netcat-openbsd        # test
 dnsutils            # test
 iputils-ping        # test
 traceroute        # test
