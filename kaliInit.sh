@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 set -e
 
 echo "=== [1/6] Updating package list ==="
