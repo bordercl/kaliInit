@@ -18,4 +18,9 @@ wget -qO- https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-kali.sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup_anthy_ja.sh | zsh
 ```
 
+### PATH追加
+
+```sh
+curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/add-to-path.zsh | zsh
+```
 
