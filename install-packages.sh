@@ -33,7 +33,7 @@ copy_shortcut() {
 }
 
 copy_shortcut "/usr/share/applications/terminator.desktop"
-copy_shortcut "/usr/share/applications/com.gexperts.Tilix.desktop"
+#copy_shortcut "/usr/share/applications/com.gexperts.Tilix.desktop"
 copy_shortcut "/usr/share/applications/kali-ghidra.desktop"
 
 echo "[*] All done. Shortcuts are in $DESKTOP_DIR"
