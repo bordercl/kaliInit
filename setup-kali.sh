@@ -29,7 +29,7 @@ echo ""
 
 echo "=== [3/4] スクリーンロック無効化（DPMS無効化） ==="
 echo "[*] Disabling display power management (DPMS)..."
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-enabled -s false
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-enabled --create -t bool -s false
 echo "[✔] DPMS disabled."
 echo ""
 
