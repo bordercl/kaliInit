@@ -16,6 +16,12 @@ sudo apt update
 echo "[*] Installing codium..."
 sudo apt install -y codium
 
-# 完了メッセージ
-echo "[✔] VSCodium installation complete. Launch it with the command: codium"
+# デスクトップにショートカット作成
+echo "[*] Creating desktop shortcut..."
+cp /usr/share/applications/codium.desktop ~/Desktop/
+chmod +x ~/Desktop/codium.desktop
 
+# 完了メッセージ
+echo "[✔] VSCodium installation complete."
+echo "    - Launch via: codium"
+echo "    - Or click the desktop icon: ~/Desktop/codium.desktop"
