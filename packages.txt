@@ -1,0 +1,11 @@
+ipcalc
+curl
+wget
+htop
+git
+vim
+net-tools
+tree
+unzip
+zip
+tcpdump
