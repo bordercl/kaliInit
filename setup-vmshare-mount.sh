@@ -1,31 +1,46 @@
 #!/usr/bin/env zsh
-# setup_vmshare_mount.sh (for zsh)
+# setup-vmshare-mount.sh  (zsh, non-TTY friendly)
+# Usage:
+#   sudo zsh -s -- <IP> <USERNAME> <PASSWORD>
+# Example:
+#   sudo curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-vmshare-mount.sh | sudo zsh -s -- 10.0.0.9 ryosuke veriserve
+
 set -euo pipefail
 
-# rootチェック
-if [ "$EUID" -ne 0 ]; then
-  echo "このスクリプトは root 権限で実行してください。"
+# --- args ---
+if [ "$#" -ne 3 ]; then
+  echo "Usage: sudo zsh -s -- <IP> <USERNAME> <PASSWORD>"
   exit 1
 fi
 
-# 対話的入力
-echo -n "SMBサーバのIPアドレスを入力してください: "
-read SMB_IP
+IP="$1"
+USERNAME="$2"
+PASSWORD="$3"
 
-echo -n "ユーザー名を入力してください: "
-read SMB_USER
-
-echo -n "パスワードを入力してください（表示されません）: "
-stty -echo
-read SMB_PASS
-stty echo
-echo
-
-# 固定値
-SMB_SHARE="vmshare"
 MOUNT_POINT="/vmshare"
+SHARE="//${IP}/vmshare"
+FSTAB="/etc/fstab"
 
-# 所有者判定
+# check root
+if [ "$EUID" -ne 0 ]; then
+  echo "This script must be run as root."
+  exit 1
+fi
+
+# ensure cifs-utils (mount.cifs) exists
+if ! command -v mount.cifs >/dev/null 2>&1; then
+  echo "cifs-utils not found — installing..."
+  # Debian/Ubuntu style install
+  if command -v apt-get >/dev/null 2>&1; then
+    apt-get update -y
+    apt-get install -y cifs-utils
+  else
+    echo "Please install cifs-utils manually for your distro and re-run."
+    exit 1
+  fi
+fi
+
+# determine owner (prefer sudo invoker)
 if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
   LOCAL_USER="$SUDO_USER"
 else
@@ -35,49 +50,38 @@ fi
 UID_NUM=$(id -u "$LOCAL_USER")
 GID_NUM=$(id -g "$LOCAL_USER")
 
-echo
-echo "設定内容:"
-echo "  SMBサーバ : //$SMB_IP/$SMB_SHARE"
-echo "  マウント先 : $MOUNT_POINT"
-echo "  ローカルユーザー : $LOCAL_USER (uid=$UID_NUM, gid=$GID_NUM)"
-echo
-echo -n "続けますか？(y/N): "
-read CONFIRM
-if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "Y" ]; then
-  echo "キャンセルしました。"
-  exit 0
-fi
-
-# マウントポイント作成
+# create mount point
 mkdir -p "$MOUNT_POINT"
 chown "$LOCAL_USER":"$LOCAL_USER" "$MOUNT_POINT"
 
-# fstab バックアップ
-FSTAB="/etc/fstab"
-BACKUP="${FSTAB}.bak.$(date +%Y%m%d%H%M%S)"
-cp -a "$FSTAB" "$BACKUP"
-echo "/etc/fstab をバックアップしました → $BACKUP"
+# backup fstab
+TS=$(date +%Y%m%d%H%M%S)
+cp -a "$FSTAB" "${FSTAB}.bak.${TS}"
+echo "/etc/fstab backed up to ${FSTAB}.bak.${TS}"
 
-# fstab 行作成
-FSTAB_LINE="//${SMB_IP}/${SMB_SHARE} ${MOUNT_POINT} cifs username=${SMB_USER},password=${SMB_PASS},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM},noauto,x-systemd.automount 0 0"
+# prepare fstab entry (direct username/password written)
+# default options: vers=3.0, iocharset=utf8, uid/gid from local user, noauto + automount
+#FSTAB_LINE="${SHARE} ${MOUNT_POINT} cifs username=${USERNAME},password=${PASSWORD},vers=3.0,iocharset=utf8,uid=${UID_NUMi},gid=${GID_NUM},noauto,x-systemd.automount 0 0"
+FSTAB_LINE="${SHARE} ${MOUNT_POINT} cifs username=${USERNAME},password=${PASSWORD},vers=3.0,iocharset=utf8,uid=${UID_NUMi},gid=${GID_NUM} 0 0"
 
-# 重複チェック
-if grep -Fq "${MOUNT_POINT}" "$FSTAB"; then
-  echo "注意: $MOUNT_POINT のエントリがすでに存在します。スキップします。"
-else
+# append if not present
+if ! grep -Fq "${SHARE}" "$FSTAB"; then
   echo "$FSTAB_LINE" >> "$FSTAB"
-  echo "/etc/fstab にエントリを追加しました。"
-fi
-
-# テストマウント
-echo "マウントをテスト中..."
-if mount -a; then
-  echo "✅ マウント成功: $MOUNT_POINT"
-  ls -l "$MOUNT_POINT"
+  echo "Added fstab entry for ${SHARE}"
 else
-  echo "❌ mount -a に失敗しました。手動で以下を試してください："
-  echo "sudo mount -t cifs //$SMB_IP/$SMB_SHARE $MOUNT_POINT -o username=$SMB_USER,password=$SMB_PASS,vers=3.0,iocharset=utf8,uid=$UID_NUM,gid=$GID_NUM"
+  echo "fstab already contains an entry for ${SHARE}; skipping append."
 fi
 
-echo
-echo "完了しました。再起動後も systemd automount により遅延マウントされます。"
+# try immediate mount (use explicit mount.cifs with same options)
+MOUNT_OPTS="username=${USERNAME},password=${PASSWORD},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM}"
+echo "Attempting immediate mount: mount -t cifs ${SHARE} ${MOUNT_POINT} -o ${MOUNT_OPTS}"
+if mount -t cifs "${SHARE}" "${MOUNT_POINT}" -o "${MOUNT_OPTS}"; then
+  echo "Mounted ${MOUNT_POINT} successfully."
+  ls -la "${MOUNT_POINT}" || true
+else
+  echo "Immediate mount failed. You can try manually:"
+  echo "  sudo mount -t cifs ${SHARE} ${MOUNT_POINT} -o ${MOUNT_OPTS}"
+  echo "Check dmesg / journalctl for CIFS-related messages."
+fi
+
+echo "Done. Note: /etc/fstab contains credentials in plain text. Consider using a credentials file for better security."

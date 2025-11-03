@@ -17,4 +17,8 @@ wget -qO- https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-kali.sh
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-anthy-ja.sh | zsh
 ```
+### smbfs
 
+```zsh
+sudo curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-vmshare-mount.sh | sudo zsh -s -- <IP> <USERNAME> <PASSWORD>
+```
