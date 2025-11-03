@@ -1,8 +1,5 @@
-#!/usr/bin/env bash
-# setup_vmshare_mount.sh
-# 対話的にIP・ユーザー名・パスワードを受け取り、
-# /etc/fstab に //IP/vmshare を /vmshare にマウントする設定を追加します。
-
+#!/usr/bin/env zsh
+# setup_vmshare_mount.sh (for zsh)
 set -euo pipefail
 
 # rootチェック
@@ -12,16 +9,23 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # 対話的入力
-read -rp "SMBサーバのIPアドレスを入力してください: " SMB_IP
-read -rp "ユーザー名を入力してください: " SMB_USER
-read -rsp "パスワードを入力してください（表示されません）: " SMB_PASS
+echo -n "SMBサーバのIPアドレスを入力してください: "
+read SMB_IP
+
+echo -n "ユーザー名を入力してください: "
+read SMB_USER
+
+echo -n "パスワードを入力してください（表示されません）: "
+stty -echo
+read SMB_PASS
+stty echo
 echo
 
 # 固定値
 SMB_SHARE="vmshare"
 MOUNT_POINT="/vmshare"
 
-# 所有者を決定
+# 所有者判定
 if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
   LOCAL_USER="$SUDO_USER"
 else
@@ -37,8 +41,12 @@ echo "  SMBサーバ : //$SMB_IP/$SMB_SHARE"
 echo "  マウント先 : $MOUNT_POINT"
 echo "  ローカルユーザー : $LOCAL_USER (uid=$UID_NUM, gid=$GID_NUM)"
 echo
-read -rp "続けますか？(y/N): " CONFIRM
-[[ "$CONFIRM" =~ ^[Yy]$ ]] || { echo "キャンセルしました。"; exit 0; }
+echo -n "続けますか？(y/N): "
+read CONFIRM
+if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "Y" ]; then
+  echo "キャンセルしました。"
+  exit 0
+fi
 
 # マウントポイント作成
 mkdir -p "$MOUNT_POINT"
@@ -51,8 +59,7 @@ cp -a "$FSTAB" "$BACKUP"
 echo "/etc/fstab をバックアップしました → $BACKUP"
 
 # fstab 行作成
-FSTAB_LINE="//${SMB_IP}/${SMB_SHARE} ${MOUNT_POINT} cifs username=${SMB_USER},password=${SMB_PASS},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM} 0 0"
-# FSTAB_LINE="//${SMB_IP}/${SMB_SHARE} ${MOUNT_POINT} cifs username=${SMB_USER},password=${SMB_PASS},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM},noauto,x-systemd.automount 0 0"
+FSTAB_LINE="//${SMB_IP}/${SMB_SHARE} ${MOUNT_POINT} cifs username=${SMB_USER},password=${SMB_PASS},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM},noauto,x-systemd.automount 0 0"
 
 # 重複チェック
 if grep -Fq "${MOUNT_POINT}" "$FSTAB"; then
@@ -74,5 +81,3 @@ fi
 
 echo
 echo "完了しました。再起動後も systemd automount により遅延マウントされます。"
-
-
