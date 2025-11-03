@@ -55,7 +55,8 @@ cp -a "$FSTAB" "${FSTAB}.bak.${TS}"
 echo "/etc/fstab backed up to ${FSTAB}.bak.${TS}"
 
 # --- fstab entry ---
-FSTAB_LINE="${SHARE} ${MOUNT_POINT} cifs username=${USERNAME},password=${PASSWORD},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM},noauto,x-systemd.automount 0 0"
+FSTAB_LINE="${SHARE} ${MOUNT_POINT} cifs username=${USERNAME},password=${PASSWORD},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM} 0 0"
+#FSTAB_LINE="${SHARE} ${MOUNT_POINT} cifs username=${USERNAME},password=${PASSWORD},vers=3.0,iocharset=utf8,uid=${UID_NUM},gid=${GID_NUM},noauto,x-systemd.automount 0 0"
 
 if ! grep -Fq "${SHARE}" "$FSTAB"; then
   echo "$FSTAB_LINE" >> "$FSTAB"
