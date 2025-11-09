@@ -6,3 +6,4 @@ tmux
 seclists
 burpsuite
 jq
+metasploit-framework
