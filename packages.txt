@@ -5,3 +5,4 @@ terminator
 tmux
 seclists
 burpsuite
+jq
