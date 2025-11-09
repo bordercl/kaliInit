@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 # Kali Linux: Firefox ESR に FoxyProxy と Wappalyzer を自動追加 (zsh版)
 
-POLICY_FILE="/usr/lib/firefox-esr/distribution/policies.json"
-BACKUP_FILE="/usr/lib/firefox-esr/distribution/policies.json.bak_$(date +%Y%m%d_%H%M%S)"
+POLICY_FILE="/usr/share/firefox-esr/distribution/policies.json"
+BACKUP_FILE="/usr/share/firefox-esr/distribution/policies.json.bak_$(date +%Y%m%d_%H%M%S)"
 
 # jq が無ければインストール
 if ! command -v jq >/dev/null 2>&1; then
