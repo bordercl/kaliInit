@@ -1,5 +1,14 @@
 #!/bin/zsh
 
+# jq がインストールされているか確認、なければインストール
+if ! command -v jq >/dev/null 2>&1; then
+    echo "jq が見つかりません。インストール中..."
+    sudo apt update
+    sudo apt install -y jq
+else
+    echo "jq がインストール済みです。"
+fi
+
 # paths
 POLICY_FILE="/usr/share/firefox-esr/distribution/policies.json"
 BACKUP_FILE="/usr/share/firefox-esr/distribution/policies.json.bak"
