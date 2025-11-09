@@ -1,28 +1,16 @@
-#!/usr/bin/env zsh
-# Kali Linux: Firefox ESR に FoxyProxy と Wappalyzer を自動追加 (zsh版)
+#!/bin/zsh
 
+# paths
 POLICY_FILE="/usr/share/firefox-esr/distribution/policies.json"
-BACKUP_FILE="/usr/share/firefox-esr/distribution/policies.json.bak_$(date +%Y%m%d_%H%M%S)"
+BACKUP_FILE="/usr/share/firefox-esr/distribution/policies.json.bak"
+TMP_FILE="/tmp/policies_new.json"
 
-# jq が無ければインストール
-if ! command -v jq >/dev/null 2>&1; then
-  echo "[*] jq が見つかりません。インストールします..."
-  sudo apt update && sudo apt install -y jq
-fi
+# 1️⃣ バックアップ
+echo "バックアップ作成: $BACKUP_FILE"
+sudo cp -- "$POLICY_FILE" "$BACKUP_FILE"
 
-# ファイル存在チェック
-if [[ ! -f ${POLICY_FILE} ]]; then
-  echo "[ERROR] ${POLICY_FILE} が見つかりません。パスを確認してください。"
-  exit 1
-fi
-
-# バックアップ作成
-echo "[+] バックアップを作成中: ${BACKUP_FILE}"
-sudo cp -- "${POLICY_FILE}" "${BACKUP_FILE}"
-
-# Extensions セクションを追加（既存の policies を壊さないように jq でマージ）
-echo "[+] Extensions セクションを追加中..."
-
+# 2️⃣ Extensions 追加
+echo "FoxyProxy と Wappalyzer を policies.json に追加中..."
 sudo jq '.policies += {
   "Extensions": {
     "Install": [
@@ -34,21 +22,20 @@ sudo jq '.policies += {
       "wappalyzer@crunchlabz.com"
     ]
   }
-}' "${POLICY_FILE}" | sudo tee "${POLICY_FILE}" > /dev/null
+}' "$POLICY_FILE" | sudo tee "$TMP_FILE" > /dev/null
 
-if [[ $? -ne 0 ]]; then
-  echo "[ERROR] policies.json の更新中にエラーが発生しました。バックアップファイルを確認してください: ${BACKUP_FILE}"
-  exit 2
-fi
+# 3️⃣ 内容確認
+echo "更新内容:"
+cat "$TMP_FILE"
 
-echo ""
-echo "[+] 完了しました！"
-echo "    - 元ファイルのバックアップ: ${BACKUP_FILE}"
-echo "    - 追加済みアドオン: FoxyProxy, Wappalyzer"
-echo ""
-echo "[*] 次のコマンドで Firefox ESR を再起動してください:"
-echo "    firefox-esr &"
-echo ""
-echo "⚠️ 注意: ツールバーへのピン留め（固定）は自動では行えません。"
-echo "   Firefoxを起動後、ツールバーを右クリックして手動でピン留めしてください。"
+# 4️⃣ 上書き
+echo "policies.json を更新..."
+sudo cp "$TMP_FILE" "$POLICY_FILE"
+
+# 5️⃣ Firefox 再起動
+echo "Firefox を再起動します..."
+firefox-esr &
+
+# 6️⃣ 注意メッセージ
+echo "⚠️ FoxyProxy と Wappalyzer のアイコンは手動でツールバーにピン留めしてください。"
 
