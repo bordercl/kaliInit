@@ -4,3 +4,4 @@ ghidra
 terminator
 tmux
 seclists
+burpsuite
