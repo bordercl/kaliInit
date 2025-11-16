@@ -20,8 +20,20 @@
 #       - close_term : Shift+Ctrl+W → Ctrl+X
 #         （※MacOSのCommand+W は VMware Fusion で Alt+F4 に変換されるため動作しない）
 #       - new_window : Shift+Ctrl+I → Super+N
-# 4. XFCE の /commands/default/<Super>t を削除
-#    → Super+T がデスクトップ環境に予約されるのを解除
+#
+# 4. XFCE の /commands/custom/<Super>t を削除
+#    → Super+T がデスクトップ環境に予約されるのを解除（default は変更しない）
+#    → GUI操作でも削除可能（以下参照）
+#
+# ===== XFCE GUIでの削除手順 =====
+# GUI > Settings > Keyboard > Application Shortcuts
+#   Command：exo-open --launch TerminalEmulator
+#   Shortcut：Super+T
+#   → これを選択して [Remove] をクリック
+#
+# ===== ターミナルでの削除 =====
+# xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>t" -r
+#
 # 5. 最後に Terminator の再起動を案内
 
 # 実行時に表示する ASCII アート
@@ -80,8 +92,12 @@ fi
 
 rm "$TMP_FILE"
 
-# XFCEのSuper+Tショートカットを削除
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/default/<Super>t" -r
-echo "XFCEのSuper+Tショートカットを削除しました"
+# XFCEのSuper+Tショートカットを削除（custom のみ）
+xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>t" -r
+echo "XFCEのカスタム Super+T ショートカット（/commands/custom/<Super>t）を削除しました"
+
+# 参考：確認コマンド
+echo "確認コマンド："
+echo '  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>t"'
 
 echo "完了！Terminatorを再起動してください。"
