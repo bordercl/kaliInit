@@ -98,6 +98,6 @@ echo "XFCEのカスタム Super+T ショートカット（/commands/custom/<Supe
 
 # 参考：確認コマンド
 echo "確認コマンド："
-echo '  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>t"'
+echo '  xfconf-query -c xfce4-keyboard-shortcuts -lv | grep "/commands/custom/<Super>t"'
 
 echo "完了！Terminatorを再起動してください。"
