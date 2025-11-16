@@ -3,7 +3,7 @@
 #
 # このスクリプトの目的：
 # 1. 既存の ~/.config/terminator/config をバックアップ (.orig)
-#    → 元の設定を保持して安全に編集可能
+#    → 元の設定を保持して安全に編集可能（※既にバックアップがある場合はスキップ）
 # 2. [keybindings] セクションが既にある場合はその下にキーバインドを追記
 #    ない場合は末尾に追加
 # 3. Terminator のキーバインド設定
@@ -14,16 +14,12 @@
 #       - split_horiz: Shift+Ctrl+O → Shift+Super+H
 #       - split_vert : Shift+Ctrl+E → Shift+Super+V
 #       - new_tab    : Shift+Ctrl+T → Super+T
-#         （※Super+T だと terminal が起動するためXFCE側を修正）
-#       - group_tab  : Super+T → 空に変更
-#         （※new_tabと重複するためDisableに設定）
+#       - group_tab  : Super+T → 空に変更（無効化）
 #       - close_term : Shift+Ctrl+W → Ctrl+X
-#         （※MacOSのCommand+W は VMware Fusion で Alt+F4 に変換されるため動作しない）
 #       - new_window : Shift+Ctrl+I → Super+N
 #
 # 4. XFCE の /commands/custom/<Super>t を削除
 #    → Super+T がデスクトップ環境に予約されるのを解除（default は変更しない）
-#    → GUI操作でも削除可能（以下参照）
 #
 # ===== XFCE GUIでの削除手順 =====
 # GUI > Settings > Keyboard > Application Shortcuts
@@ -54,10 +50,14 @@ BACKUP_FILE="$CONFIG_FILE.orig"
 
 mkdir -p "$CONFIG_DIR"
 
-# バックアップ
+# バックアップ（既に*.origがあればスキップ）
 if [ -f "$CONFIG_FILE" ]; then
-    cp "$CONFIG_FILE" "$BACKUP_FILE"
-    echo "既存の設定ファイルをバックアップしました: $BACKUP_FILE"
+    if [ -f "$BACKUP_FILE" ]; then
+        echo "バックアップファイルが既に存在するためコピーをスキップしました: $BACKUP_FILE"
+    else
+        cp "$CONFIG_FILE" "$BACKUP_FILE"
+        echo "既存の設定ファイルをバックアップしました: $BACKUP_FILE"
+    fi
 fi
 
 # 追記内容を一時ファイルに書き込む
