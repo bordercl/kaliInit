@@ -1,5 +1,5 @@
 #!/bin/zsh
-# setup_terminator_shortcuts.zsh
+# setup-terminator-shortcuts.zsh
 #
 # このスクリプトの目的：
 # 1. 既存の ~/.config/terminator/config をバックアップ (.orig)
@@ -60,9 +60,13 @@ if [ -f "$CONFIG_FILE" ]; then
     fi
 fi
 
-# 追記内容を一時ファイルに書き込む
-TMP_FILE=$(mktemp)
-cat > "$TMP_FILE" <<EOL
+# 設定が既にあるか確認（copy を例にチェック）
+if grep -q "copy = <Primary>c" "$CONFIG_FILE" 2>/dev/null; then
+    echo "Terminatorのキーバインドは既に設定済みのため追記をスキップします"
+else
+    # 追記内容を一時ファイルに書き込む
+    TMP_FILE=$(mktemp)
+    cat > "$TMP_FILE" <<EOL
   new_tab = <Super>t
   split_auto = <Shift><Super>a
   split_horiz = <Shift><Super>h
@@ -74,23 +78,22 @@ cat > "$TMP_FILE" <<EOL
   new_window = <Super>n
 EOL
 
-# [keybindings] の行番号を取得（元のシンプル grep）
-LINE_NUM=$(grep -n "^\[keybindings\]" "$CONFIG_FILE" | cut -d: -f1)
+    # [keybindings] の行番号を取得
+    LINE_NUM=$(grep -n "^\[keybindings\]" "$CONFIG_FILE" | cut -d: -f1)
 
-if [ -n "$LINE_NUM" ]; then
-    # [keybindings] の次の行に追記
-    LINE_NUM=$((LINE_NUM + 1))
-    sed -i "${LINE_NUM}r $TMP_FILE" "$CONFIG_FILE"
-    echo "[keybindings] セクションの下に追記しました"
-else
-    # セクションがなければ末尾に追加
-    echo "" >> "$CONFIG_FILE"
-    echo "[keybindings]" >> "$CONFIG_FILE"
-    cat "$TMP_FILE" >> "$CONFIG_FILE"
-    echo "[keybindings] セクションを末尾に追加しました"
+    if [ -n "$LINE_NUM" ]; then
+        LINE_NUM=$((LINE_NUM + 1))
+        sed -i "${LINE_NUM}r $TMP_FILE" "$CONFIG_FILE"
+        echo "[keybindings] セクションの下に追記しました"
+    else
+        echo "" >> "$CONFIG_FILE"
+        echo "[keybindings]" >> "$CONFIG_FILE"
+        cat "$TMP_FILE" >> "$CONFIG_FILE"
+        echo "[keybindings] セクションを末尾に追加しました"
+    fi
+
+    rm "$TMP_FILE"
 fi
-
-rm "$TMP_FILE"
 
 # XFCEのSuper+Tショートカットを削除（custom のみ）
 xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>t" -r
