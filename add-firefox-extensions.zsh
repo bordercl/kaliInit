@@ -24,12 +24,12 @@ sudo jq '.policies += {
   "Extensions": {
     "Install": [
       "https://addons.mozilla.org/firefox/downloads/latest/FoxyProxy-standard/latest.xpi",
-      "https://addons.mozilla.org/firefox/downloads/latest/wappalyzer/latest.xpi"
+      "https://addons.mozilla.org/firefox/downloads/latest/wappalyzer/latest.xpi",
       "https://addons.mozilla.org/firefox/downloads/latest/simple-translate/latest.xpi"
     ],
     "Locked": [
       "foxyproxy@eric.h.jung",
-      "wappalyzer@crunchlabz.com"
+      "wappalyzer@crunchlabz.com",
       "simple-translate@sienori"
     ]
   }
