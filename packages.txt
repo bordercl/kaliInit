@@ -6,4 +6,6 @@ tmux
 seclists
 burpsuite
 jq
+crackmapexec
+enum4linux-ng
 #metasploit-framework
