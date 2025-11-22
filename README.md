@@ -20,5 +20,5 @@ curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-anthy-j
 ### smbfs
 
 ```zsh
-sudo curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-vmshare-mount.sh | sudo zsh -s -- <IP> <USERNAME> <PASSWORD>
+sudo curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-cifs-mount.sh | sudo zsh -s -- <IP> <USERNAME> <PASSWORD>
 ```
