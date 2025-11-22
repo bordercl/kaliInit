@@ -19,16 +19,18 @@ echo "バックアップ作成: $BACKUP_FILE"
 sudo cp -- "$POLICY_FILE" "$BACKUP_FILE"
 
 # 2️⃣ Extensions 追加
-echo "FoxyProxy と Wappalyzer を policies.json に追加中..."
+echo "FoxyProxy、Wappalyzer、Simple Translate を policies.json に追加中..."
 sudo jq '.policies += {
   "Extensions": {
     "Install": [
-      "https://addons.mozilla.org/firefox/downloads/latest/foxyproxy-standard/latest.xpi",
+      "https://addons.mozilla.org/firefox/downloads/latest/FoxyProxy-standard/latest.xpi",
       "https://addons.mozilla.org/firefox/downloads/latest/wappalyzer/latest.xpi"
+      "https://addons.mozilla.org/firefox/downloads/latest/simple-translate/latest.xpi"
     ],
     "Locked": [
       "foxyproxy@eric.h.jung",
       "wappalyzer@crunchlabz.com"
+      "simple-translate@sienori"
     ]
   }
 }' "$POLICY_FILE" | sudo tee "$TMP_FILE" > /dev/null
