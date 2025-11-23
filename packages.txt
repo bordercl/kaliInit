@@ -1,5 +1,6 @@
 #python3-pip # test
 #build-essential#test
+#metasploit-framework
 ghidra
 terminator
 tmux
@@ -8,4 +9,4 @@ burpsuite
 jq
 crackmapexec
 enum4linux-ng
-#metasploit-framework
+freerdp3-x11
