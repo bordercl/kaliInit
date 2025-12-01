@@ -10,3 +10,4 @@ jq
 crackmapexec
 enum4linux-ng
 freerdp3-x11
+chisel
