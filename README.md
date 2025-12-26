@@ -22,3 +22,6 @@ curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-anthy-j
 ```zsh
 sudo curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-cifs-mount.sh | sudo zsh -s -- <IP> <USERNAME> <PASSWORD>
 ```
+
+### sudo hissu
+curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-services.zsh | sudo zsh
