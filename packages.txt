@@ -12,3 +12,8 @@ enum4linux-ng
 freerdp3-x11
 chisel
 sshuttle
+ncat
+mingw-w64
+wine
+qemu-user-static
+binfmt-support
