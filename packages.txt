@@ -18,3 +18,4 @@ wine
 qemu-user-static
 binfmt-support
 python3-wsgidav
+rubeus
