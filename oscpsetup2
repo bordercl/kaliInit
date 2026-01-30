@@ -1,0 +1,24 @@
+overwrite_all = False
+
+
+def confirm_overwrite(path):
+    global overwrite_all
+
+    if not os.path.exists(path):
+        return
+
+    if overwrite_all:
+        return
+
+    ans = input(
+        f"[!] {path} already exists. Overwrite? (y/N/(A)ll): "
+    ).strip().lower()
+
+    if ans in ("a", "all"):
+        overwrite_all = True
+        return
+    elif ans == "y":
+        return
+    else:
+        print("[*] Aborted")
+        sys.exit(0)

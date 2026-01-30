@@ -1,97 +1,92 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env python3
 
-TEMPLATE="templateNote.md"
-TARGET_FILE="targets.txt"
-NOTE_FILE="note.md"
+"""
+OSCP note.md generator (Phase 1)
 
-if [[ ! -f "$TEMPLATE" ]]; then
-    echo "[!] templateNote.md not found in current directory."
-    exit 1
-fi
+- Reads template.md
+- Prompts user for target IPs
+- Saves IPs to targets.txt
+- Generates note.md with IP-specific blocks
+- Handles existing files with overwrite confirmation (y/N/(A)ll)
+"""
 
-echo "[*] Enter target IP addresses (one per line)."
-echo "[*] Press Enter on an empty line to finish."
-echo
+from jinja2 import Template
+import os
+import sys
 
-> "$TARGET_FILE"
+TEMPLATE_FILE = "template.md"
+TARGET_FILE = "targets.txt"
+OUTPUT_FILE = "note.md"
 
-while true; do
-    read -rp "IP > " ip
-    [[ -z "$ip" ]] && break
-    echo "$ip" >> "$TARGET_FILE"
-done
+overwrite_all = False
 
-if [[ ! -s "$TARGET_FILE" ]]; then
-    echo "[!] No IP addresses entered. Exiting."
-    exit 1
-fi
 
-echo "[+] Targets saved to $TARGET_FILE"
+def confirm_overwrite(path):
+    """Check if file exists and prompt for overwrite"""
+    global overwrite_all
 
-# -----------------------------
-# Standalone Targets Table
-# -----------------------------
-TABLE_ROWS=""
-while read -r ip; do
-    TABLE_ROWS+="| TBD | $ip | TBD | 未 | - | - | - | - |\n"
-done < "$TARGET_FILE"
+    if not os.path.exists(path):
+        return
 
-# -----------------------------
-# Standalone Note Blocks
-# -----------------------------
-STANDALONE_BLOCKS=""
-while read -r ip; do
-    STANDALONE_BLOCKS+="
-## [Standalone] $ip ($ip)
-### 進捗チェック
-- [ ] TCP全ポート
-- [ ] UDP top（必要なら）
-- [ ] Web/Service列挙
-- [ ] 初期侵入
-- [ ] local.txt
-- [ ] 権限昇格
-- [ ] proof.txt
-- [ ] スクショ（initial/privesc）
+    if overwrite_all:
+        return
 
-### Service Enumeration
-- Nmap結果（要点）:
-  - TCP:
-  - UDP:
-- 実行コマンド:
-\`\`\`bash
-nmap $ip -p- --min-rate 20000 -oN nmap_allports.txt
-nmap $ip -sC -sV -oN nmap_detail.txt
-\`\`\`
+    ans = input(f"[!] {path} already exists. Overwrite? (y/N/(A)ll): ").strip().lower()
 
-- 証跡ファイル保存先:
-  - ./artifacts/$ip/
+    if ans in ("a", "all"):
+        overwrite_all = True
+        return
+    elif ans == "y":
+        return
+    else:
+        print("[*] Aborted")
+        sys.exit(0)
 
----
 
-"
-done < "$TARGET_FILE"
+def get_targets():
+    """Prompt user to enter multiple IPs"""
+    print("[*] Enter target IPs (one per line). Empty line to finish:")
+    targets = []
+    while True:
+        line = input("> ").strip()
+        if not line:
+            break
+        targets.append(line)
+    return targets
 
-# -----------------------------
-# Generate note.md
-# -----------------------------
-awk -v table="$TABLE_ROWS" -v blocks="$STANDALONE_BLOCKS" '
-/^\| Hostname \| IP \| OS推定 \| Status/ {
-    print
-    getline
-    print
-    printf "%s", table
-    next
-}
-/^# 4\. ターゲット別ノート（Standalone）/ {
-    print
-    print blocks
-    skip=1
-    next
-}
-skip && /^# 5\./ { skip=0 }
-!skip { print }
-' "$TEMPLATE" > "$NOTE_FILE"
 
-echo "[+] note.md created from template"
-echo "[*] oscpsetup completed successfully"
+def main():
+    # check existing files
+    confirm_overwrite(TARGET_FILE)
+    confirm_overwrite(OUTPUT_FILE)
+
+    # load template
+    try:
+        with open(TEMPLATE_FILE, "r") as f:
+            template = Template(f.read())
+    except FileNotFoundError:
+        print(f"[!] {TEMPLATE_FILE} not found")
+        sys.exit(1)
+
+    # get target IPs
+    targets = get_targets()
+    if not targets:
+        print("[!] No targets provided")
+        sys.exit(1)
+
+    # save targets.txt
+    with open(TARGET_FILE, "w") as f:
+        for ip in targets:
+            f.write(ip + "\n")
+
+    # render note.md
+    rendered = template.render(targets=targets)
+    with open(OUTPUT_FILE, "w") as f:
+        f.write(rendered)
+
+    print(f"[+] targets.txt written ({len(targets)} targets)")
+    print("[+] note.md generated")
+
+
+if __name__ == "__main__":
+    main()
