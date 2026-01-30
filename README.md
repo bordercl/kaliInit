@@ -52,7 +52,7 @@ curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-anthy-j
 
 🔐 LightDM 自動ログイン有効化
 ```sh
-curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-autologin.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-autologin.sh | sudo zsh
 ```
 
 ⚙️ サービス有効化

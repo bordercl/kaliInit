@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 # Enable LightDM autologin only if not already enabled, with verification
 
 CONF="/etc/lightdm/lightdm.conf"
@@ -6,7 +6,7 @@ USER_NAME="kali"
 BACKUP="/etc/lightdm/lightdm.conf.bak.$(date +%F_%T)"
 
 # rootチェック
-if [ "$EUID" -ne 0 ]; then
+if [[ "$EUID" -ne 0 ]]; then
   echo "[!] Run as root (sudo)"
   exit 1
 fi
