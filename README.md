@@ -16,6 +16,11 @@ wget -qO- https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-kali.sh
 
 ## コマンド一覧
 
+🖥 VMware Shared Folder（bind mount）
+```sh
+curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/vmshare.sh | zsh
+```
+
 📦 パッケージ一括インストール
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/install-packages.sh | zsh
