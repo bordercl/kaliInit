@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TEMPLATE="templateNote.md"
+TARGET_FILE="targets.txt"
+NOTE_FILE="note.md"
+
+if [[ ! -f "$TEMPLATE" ]]; then
+    echo "[!] templateNote.md not found in current directory."
+    exit 1
+fi
+
+echo "[*] Enter target IP addresses (one per line)."
+echo "[*] Press Enter on an empty line to finish."
+echo
+
+> "$TARGET_FILE"
+
+while true; do
+    read -rp "IP > " ip
+    [[ -z "$ip" ]] && break
+    echo "$ip" >> "$TARGET_FILE"
+done
+
+if [[ ! -s "$TARGET_FILE" ]]; then
+    echo "[!] No IP addresses entered. Exiting."
+    exit 1
+fi
+
+echo "[+] Targets saved to $TARGET_FILE"
+
+# -----------------------------
+# Standalone Targets Table
+# -----------------------------
+TABLE_ROWS=""
+while read -r ip; do
+    TABLE_ROWS+="| TBD | $ip | TBD | 未 | - | - | - | - |\n"
+done < "$TARGET_FILE"
+
+# -----------------------------
+# Standalone Note Blocks
+# -----------------------------
+STANDALONE_BLOCKS=""
+while read -r ip; do
+    STANDALONE_BLOCKS+="
+## [Standalone] $ip ($ip)
+### 進捗チェック
+- [ ] TCP全ポート
+- [ ] UDP top（必要なら）
+- [ ] Web/Service列挙
+- [ ] 初期侵入
+- [ ] local.txt
+- [ ] 権限昇格
+- [ ] proof.txt
+- [ ] スクショ（initial/privesc）
+
+### Service Enumeration
+- Nmap結果（要点）:
+  - TCP:
+  - UDP:
+- 実行コマンド:
+\`\`\`bash
+nmap $ip -p- --min-rate 20000 -oN nmap_allports.txt
+nmap $ip -sC -sV -oN nmap_detail.txt
+\`\`\`
+
+- 証跡ファイル保存先:
+  - ./artifacts/$ip/
+
+---
+
+"
+done < "$TARGET_FILE"
+
+# -----------------------------
+# Generate note.md
+# -----------------------------
+awk -v table="$TABLE_ROWS" -v blocks="$STANDALONE_BLOCKS" '
+/^\| Hostname \| IP \| OS推定 \| Status/ {
+    print
+    getline
+    print
+    printf "%s", table
+    next
+}
+/^# 4\. ターゲット別ノート（Standalone）/ {
+    print
+    print blocks
+    skip=1
+    next
+}
+skip && /^# 5\./ { skip=0 }
+!skip { print }
+' "$TEMPLATE" > "$NOTE_FILE"
+
+echo "[+] note.md created from template"
+echo "[*] oscpsetup completed successfully"
