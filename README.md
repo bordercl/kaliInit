@@ -16,32 +16,32 @@ wget -qO- https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-kali.sh
 
 ## コマンド一覧
 
-📦 Package Install
-
+📦 パッケージ一括インストール
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/install-packages.sh | zsh
 ```
 
-🧩 VS code Install
-
+🧑‍💻 Visual Studio Code インストール
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/install-vscode.sh | zsh
 ```
 
-🌐 Firefox about:config
-
+🧩 Firefox アドオン追加
+```sh
+curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/add-firefox-extensions.zsh | zsh
 ```
+
+🌐 Firefox about:config 設定
+```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-firefox-aboutConfig.sh | zsh
 ```
 
-⌨️ Terminator Shortcuts
-
+🖥 Terminator ショートカット設定
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-terminator-shortcuts.zsh | zsh
 ```
 
-🇯🇵 Japanese Input (Anthy)
-
+🈶 日本語入力（Anthy）
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-anthy-ja.sh | zsh
 ```
@@ -50,20 +50,17 @@ curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-anthy-j
 
 ### sudo 必須
 
-🔐 Autologin
-
+🔐 LightDM 自動ログイン有効化
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-autologin.sh | sudo bash
 ```
 
-⚙️ Services Enable
-
+⚙️ サービス有効化
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-services.zsh | sudo zsh
 ```
 
-🗂 CIFS Mount
-
+🗂 CIFS（SMB）マウント設定
 ```sh
 sudo curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-cifs-mount.sh | sudo zsh -s -- <IP> <USERNAME> <PASSWORD>
 ```
