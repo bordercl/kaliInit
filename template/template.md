@@ -1,6 +1,8 @@
 # Independent Challenges
+<!-- NOTE: run tag is currently intended for shell commands only -->
 
-## 例(最後に削除)
+## Example (DO NOT PROCESS)
+<!-- NOTE: Example section must NOT contain ```bash run blocks -->
 
 ### Service Enumeration
 
@@ -70,16 +72,36 @@ XXXXX
 
 ![ImgPlaceholder](img/placeholder-image-300x225.png)
 
-## Target #1 - 192.168.x.x
+# Active Directory Set
 
-### Service Enumeration
+**Port Scan Results**
+
+IP Address | Ports Open
+------------------|----------------------------------------
+192.168.x.x       | **TCP**: XX,XXXX\
+**UDP**: XX,XXXX
+192.168.x.x       | **TCP**: XX,XXXX\
+**UDP**: XX,XXXX
+192.168.x.x       | **TCP**: XX,XXXX\
+**UDP**: XX,XXXX
+
+<!-- TARGET START -->
+## (AD set) Hostname<N>: <IP> or (stand-alone) Target #<N> - <IP>
+
+### Service Enumeration (AD setでは省略可)
+<!-- OPTIONAL: AD set -->
 
 Server IP Address | Ports Open
 ------------------|----------------------------------------
-192.168.1.1       | **TCP**: 21,22,25,80,443
-**UDP**: 1434,161
+<IP>       | **TCP**: XX,XXXX
+**UDP**: XX,XXXX
 
 **Nmap Scan Results:**
+
+```bash run
+# Example: initial enumeration
+nmap -F <IP>
+```
 
 *初期シェルの脆弱性を悪用*
 
@@ -101,7 +123,8 @@ Server IP Address | Ports Open
 
 **local.txt content（local.txt の内容）:**
 
-### Privilege Escalation - XXX
+### Privilege Escalation - XXX (AD Setでは省略可)
+<!-- OPTIONAL: AD set -->
 
 **Vulnerability Explanation（脆弱性の説明）:**
 
@@ -119,55 +142,7 @@ Server IP Address | Ports Open
 
 **proof.txt content（proof.txt の内容）:**
 
-# Active Directory Set
-
-**Port Scan Results**
-
-IP Address | Ports Open
-------------------|----------------------------------------
-192.168.x.x       | **TCP**: 1433,3389\
-**UDP**: 1434,161
-192.168.x.x       | **TCP**: 1433,3389\
-**UDP**: 1434,161
-192.168.x.x       | **TCP**: 1433,3389\
-**UDP**: 1434,161
-
-## Hostname1: 192.168.x.x
-
-### Initial Access - XXX
-
-**Vulnerability Explanation（脆弱性の説明）:**
-
-**Vulnerability Fix（脆弱性の修正）:**
-
-**Severity（深刻度）:**
-
-**Steps to reproduce the attack（攻撃の再現手順）:**
-
-**Proof of Concept Code（概念実証コード）:**
-
-**Proof Screenshot（実証スクリーンショット）:**
-
-**local.txt content（local.txt の内容）:**
-
-### Privilege Escalation - XXX
-
-**Vulnerability Explanation（脆弱性の説明）:**
-
-**Vulnerability Fix（脆弱性の修正）:**
-
-**Severity（深刻度）:**
-
-**Steps to reproduce the attack（攻撃の再現手順）:**
-
-**Proof of Concept Code（概念実証コード）:**
-
-### Post-Exploitation
-
-**Proof Screenshot（実証スクリーンショット）:**
-
-**proof.txt content（proof.txt の内容）:**
-
+<!-- TARGET END -->
 # Additional Items Not Mentioned in the Report
 
 This section is placed for any additional items that were not mentioned in the overall report.
