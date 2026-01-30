@@ -55,6 +55,17 @@ curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-anthy-j
 
 ### sudo 必須
 
+以下のスクリプトは **root 権限での実行が前提**です。  
+そのため、`curl | sudo zsh` の形式で実行してください。
+
+✔ 条件  
+- `/etc` 配下の設定ファイルのみを書き換える  
+- `systemd` / `service` の操作のみを行う  
+- `$HOME` を一切使用しない  
+- ユーザー依存の設定を含まない  
+
+上記条件を満たすため、**root 実行でも安全に動作する設計**になっています。
+
 🔐 LightDM 自動ログイン有効化
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-autologin.sh | sudo zsh
@@ -63,9 +74,4 @@ curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-autolo
 ⚙️ サービス有効化
 ```sh
 curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/enable-services.zsh | sudo zsh
-```
-
-🗂 CIFS（SMB）マウント設定
-```sh
-sudo curl -sSL https://raw.githubusercontent.com/bordercl/kaliInit/main/setup-cifs-mount.sh | sudo zsh -s -- <IP> <USERNAME> <PASSWORD>
 ```
