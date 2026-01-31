@@ -1,24 +1,61 @@
-overwrite_all = False
+#!/usr/bin/env zsh
+#
+# oscpsetup2
+# Implemented for markdown-code-runner usage
+# Only executes ```bash run``` or ```zsh run``` blocks
+# Skips unsupported run languages and unresolved <IP>
+#
 
+set -e
 
-def confirm_overwrite(path):
-    global overwrite_all
+NOTE_FILE="$1"
 
-    if not os.path.exists(path):
-        return
+if [[ -z "$NOTE_FILE" ]]; then
+  echo "Usage: oscpsetup2 <note.md>"
+  exit 1
+fi
 
-    if overwrite_all:
-        return
+if [[ ! -f "$NOTE_FILE" ]]; then
+  echo "[!] File not found: $NOTE_FILE"
+  exit 1
+fi
 
-    ans = input(
-        f"[!] {path} already exists. Overwrite? (y/N/(A)ll): "
-    ).strip().lower()
+echo "[*] Processing run blocks in $NOTE_FILE"
+echo
 
-    if ans in ("a", "all"):
-        overwrite_all = True
-        return
-    elif ans == "y":
-        return
-    else:
-        print("[*] Aborted")
-        sys.exit(0)
+in_run_block=0
+run_lang=""
+buffer=""
+
+while IFS= read -r line; do
+  if [[ "$line" =~ ^\`\`\`(bash|zsh)[[:space:]]+run ]]; then
+    run_lang="${match[1]}"
+    in_run_block=1
+    buffer=""
+    continue
+  fi
+
+  if [[ "$line" == "```" && $in_run_block -eq 1 ]]; then
+    if echo "$buffer" | grep -q "<IP>"; then
+      echo "[SKIP] unresolved <IP> placeholder"
+    else
+      echo "[RUN] $run_lang"
+      echo "------------------------"
+      if [[ "$run_lang" == "bash" ]]; then
+        bash -c "$buffer"
+      elif [[ "$run_lang" == "zsh" ]]; then
+        zsh -c "$buffer"
+      fi
+      echo "------------------------"
+    fi
+    in_run_block=0
+    run_lang=""
+    buffer=""
+    continue
+  fi
+
+  if [[ $in_run_block -eq 1 ]]; then
+    buffer+="$line"$'\n'
+  fi
+
+done < "$NOTE_FILE"

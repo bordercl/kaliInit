@@ -2,11 +2,16 @@
 
 """
 OSCP note.md generator (Phase 1)
+Implemented in Python using Jinja2 templating
 
 - Reads template.md
+- DOES NOT remove Example section (manual deletion if needed)
+- Extracts TARGET block (<!-- TARGET START --> ... <!-- TARGET END -->)
 - Prompts user for target IPs
+- Replaces <IP> and <N> placeholders
+- Duplicates TARGET block per IP
 - Saves IPs to targets.txt
-- Generates note.md with IP-specific blocks
+- Generates note.md
 - Handles existing files with overwrite confirmation (y/N/(A)ll)
 """
 
@@ -22,7 +27,6 @@ overwrite_all = False
 
 
 def confirm_overwrite(path):
-    """Check if file exists and prompt for overwrite"""
     global overwrite_all
 
     if not os.path.exists(path):
@@ -44,7 +48,6 @@ def confirm_overwrite(path):
 
 
 def get_targets():
-    """Prompt user to enter multiple IPs"""
     print("[*] Enter target IPs (one per line). Empty line to finish:")
     targets = []
     while True:
@@ -55,34 +58,62 @@ def get_targets():
     return targets
 
 
+def extract_target_block(text):
+    start = "<!-- TARGET START -->"
+    end = "<!-- TARGET END -->"
+
+    if start not in text or end not in text:
+        print("[!] TARGET block not found in template.md")
+        sys.exit(1)
+
+    before, rest = text.split(start, 1)
+    block, after = rest.split(end, 1)
+
+    return before, block, after
+
+
 def main():
-    # check existing files
+    print(
+r"""
+                                         __                
+  ____  ______ ____ ______  ______ _____/  |_ __ ________  
+ /  _ \/  ___// ___\\____ \/  ___// __ \   __\  |  \____ \ 
+(  <_> )___ \\  \___|  |_> >___ \\  ___/|  | |  |  /  |_> >
+ \____/____  >\___  >   __/____  >\___  >__| |____/|   __/ 
+           \/     \/|__|       \/     \/           |__|    
+"""
+    )
+
     confirm_overwrite(TARGET_FILE)
     confirm_overwrite(OUTPUT_FILE)
 
-    # load template
     try:
         with open(TEMPLATE_FILE, "r") as f:
-            template = Template(f.read())
+            template_text = f.read()
     except FileNotFoundError:
         print(f"[!] {TEMPLATE_FILE} not found")
         sys.exit(1)
 
-    # get target IPs
+    before, target_block, after = extract_target_block(template_text)
+
     targets = get_targets()
     if not targets:
         print("[!] No targets provided")
         sys.exit(1)
 
-    # save targets.txt
     with open(TARGET_FILE, "w") as f:
         for ip in targets:
             f.write(ip + "\n")
 
-    # render note.md
-    rendered = template.render(targets=targets)
+    rendered_blocks = []
+    for idx, ip in enumerate(targets, start=1):
+        block = target_block.replace("<IP>", ip).replace("<N>", str(idx))
+        rendered_blocks.append(block)
+
+    final_note = before + "".join(rendered_blocks) + after
+
     with open(OUTPUT_FILE, "w") as f:
-        f.write(rendered)
+        f.write(final_note)
 
     print(f"[+] targets.txt written ({len(targets)} targets)")
     print("[+] note.md generated")
