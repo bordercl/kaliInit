@@ -23,3 +23,7 @@ mingw-w64
 g++-mingw-w64-x86-64
 tidy
 rlwrap
+snmp-mibs-downloader
+lftp
+poppler-utils
+steghide
