@@ -27,3 +27,5 @@ snmp-mibs-downloader
 lftp
 poppler-utils
 steghide
+p7zip-full
+gcc-x86-64-linux-gnu
