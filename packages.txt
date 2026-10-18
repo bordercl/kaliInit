@@ -32,7 +32,7 @@ p7zip-full
 gcc-x86-64-linux-gnu
 passwordsafe
 python3-certipy
-dotnet-sdk-8.0
+#dotnet-sdk-8.0
 mono-utils
 mono-devel
 chisel-common-binaries
