@@ -15,13 +15,12 @@ chisel-common-binaries
 sshuttle
 ncat
 mingw-w64
+g++-mingw-w64-x86-64
 wine
 qemu-user-static
 binfmt-support
 python3-wsgidav
 rubeus
-mingw-w64
-g++-mingw-w64-x86-64
 tidy
 rlwrap
 snmp-mibs-downloader
@@ -35,6 +34,6 @@ python3-certipy
 #dotnet-sdk-8.0
 mono-utils
 mono-devel
-chisel-common-binaries
-bloodhound
+#bloodhound
 ligolo-ng
+ligolo-ng-common-binaries
